@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/mulhamna/broask/compare/v1.0.3...v1.0.4) (2026-04-29)
+
+
+### Bug Fixes
+
+* **release:** rewrite homebrew formula deterministically ([#9](https://github.com/mulhamna/broask/issues/9)) ([b70d68e](https://github.com/mulhamna/broask/commit/b70d68edbc31b18d6eb41bb82fdf2f49456d6bb9))
+
 ## [1.0.3](https://github.com/mulhamna/broask/compare/v1.0.2...v1.0.3) (2026-04-29)
 
 
