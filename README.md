@@ -1,27 +1,37 @@
 # broask 🔔
 
-Play a sound whenever a CLI tool asks for your confirmation — so you can tab away and come back when needed.
+Play a sound whenever a CLI tool asks for your confirmation, so you can tab away and come back when needed.
 
 Works with Claude Code, Cursor, Aider, Gemini CLI, or any interactive terminal tool.
 
-Built in Go — single binary, zero runtime dependency, cross-platform.
+Built in Go, single binary, zero runtime dependency, cross-platform.
 
 ---
 
 ## Install
+
+Quick install:
 
 ### Via Go
 ```bash
 go install github.com/mulhamna/broask@latest
 ```
 
-### Manual (GitHub Releases)
-Download the binary for your platform from [Releases](https://github.com/mulhamna/broask/releases) and add to your `$PATH`.
-
 ### Via Homebrew (macOS/Linux)
 ```bash
 brew install mulhamna/tap/broask
 ```
+
+### Via Scoop (Windows)
+```powershell
+scoop bucket add mulhamna https://github.com/mulhamna/scoop-bucket
+scoop install broask
+```
+
+### Manual (GitHub Releases)
+Download the binary for your platform from [Releases](https://github.com/mulhamna/broask/releases) and add it to your `$PATH`.
+
+For more install options, see [INSTALL.md](./INSTALL.md).
 
 ---
 
@@ -34,7 +44,7 @@ broask -- aider --model gpt-4o
 broask -- gemini
 ```
 
-That's it. broask pipes stdin/stdout transparently — the tool behaves exactly the same, except you'll hear a 🔔 whenever it asks you something.
+That's it. broask pipes stdin/stdout transparently, the tool behaves exactly the same, except you'll hear a 🔔 whenever it asks you something.
 
 ---
 
@@ -132,6 +142,10 @@ Disable a built-in pattern by adding its key to `disabled_defaults` in `~/.broas
 
 ---
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## License
 
-MIT
+MIT. See [LICENSE](./LICENSE).

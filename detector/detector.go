@@ -10,14 +10,14 @@ import (
 )
 
 var defaultPatterns = map[string]string{
-	"yes_no":           `(?i)\(yes|no\)|\by/n\b|\[Y/n\]|\[y/N\]`,
-	"always_never":     `(?i)\b(always|never|skip)\b`,
-	"do_you_want":      `(?i)(do you want to|would you like to|are you sure)`,
-	"press_enter":      `(?i)press enter to continue`,
-	"overwrite":        `(?i)(overwrite|replace|delete|remove)\?`,
-	"numbered_choice":  `(?i)^\s*\[\d+\]`,
-	"yn_bracket":       `\[y/n\]`,
-	"confirm":          `(?i)confirm\?`,
+	"yes_no":          `(?i)\(yes|no\)|\by/n\b|\[Y/n\]|\[y/N\]`,
+	"always_never":    `(?i)\b(always|never|skip)\b`,
+	"do_you_want":     `(?i)(do you want to|would you like to|are you sure)`,
+	"press_enter":     `(?i)press enter to continue`,
+	"overwrite":       `(?i)(overwrite|replace|delete|remove)\?`,
+	"numbered_choice": `(?i)^\s*\[\d+\]`,
+	"yn_bracket":      `\[y/n\]`,
+	"confirm":         `(?i)confirm\?`,
 }
 
 type Detector struct {

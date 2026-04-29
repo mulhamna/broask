@@ -1,23 +1,41 @@
 name: Release Please
 
+# Flow:
+# 1. Pushes to main are analyzed for Conventional Commits.
+# 2. release-please creates or updates a release PR.
+# 3. When that PR is merged, release-please pushes a git tag and GitHub release.
+# 4. The tag push triggers release.yml to build binaries and refresh package manifests.
+#
+# Important:
+# Use a PAT secret named RELEASE_PLEASE_TOKEN so the tag push can trigger the
+# downstream Release workflow. The default GITHUB_TOKEN cannot trigger follow-on
+# workflows from tags it creates.
+
 on:
   push:
     branches:
       - main
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
 
 jobs:
   release-please:
+    name: Release Please
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       release_created: ${{ steps.rp.outputs.release_created }}
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: google-github-actions/release-please-action@v4
         id: rp
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: go
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
