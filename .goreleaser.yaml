@@ -27,13 +27,6 @@ archives:
         format: zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
-brews:
-  - repository:
-      owner: mulhamna
-      name: homebrew-tap
-    homepage: https://github.com/mulhamna/broask
-    description: Play a sound when CLI tools ask for confirmation
-
 checksum:
   name_template: checksums.txt
 
