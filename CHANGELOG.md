@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/mulhamna/broask/compare/v1.0.2...v1.0.3) (2026-04-29)
+
+
+### Bug Fixes
+
+* **release:** split homebrew publishing from goreleaser ([#7](https://github.com/mulhamna/broask/issues/7)) ([7a76c41](https://github.com/mulhamna/broask/commit/7a76c4149b341b00cc3f00fe26ac5a441b7a3d24))
+
 ## [1.0.2](https://github.com/mulhamna/broask/compare/v1.0.1...v1.0.2) (2026-04-29)
 
 
