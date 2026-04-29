@@ -7,7 +7,7 @@ brew tap mulhamna/tap
 brew install broask
 ```
 
-Or install directly:
+Or in one command:
 
 ```bash
 brew install mulhamna/tap/broask
