@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/mulhamna/broask/compare/v1.0.1...v1.0.2) (2026-04-29)
+
+
+### Bug Fixes
+
+* **release:** use tap PAT for goreleaser publishing ([#5](https://github.com/mulhamna/broask/issues/5)) ([168d6f6](https://github.com/mulhamna/broask/commit/168d6f68ffe011523c0834a01fc039aa17c8cbcd))
+
 ## [1.0.1](https://github.com/mulhamna/broask/compare/v1.0.0...v1.0.1) (2026-04-29)
 
 
