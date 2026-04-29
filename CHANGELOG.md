@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/mulhamna/broask/compare/v1.0.4...v1.0.5) (2026-04-29)
+
+
+### Bug Fixes
+
+* **release:** stage scoop manifest before diff check ([#11](https://github.com/mulhamna/broask/issues/11)) ([f088636](https://github.com/mulhamna/broask/commit/f0886368363bdcd9fe37071b5cfa5397dbd03ed1))
+
 ## [1.0.4](https://github.com/mulhamna/broask/compare/v1.0.3...v1.0.4) (2026-04-29)
 
 
