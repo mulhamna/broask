@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/mulhamna/broask/compare/v1.0.0...v1.0.1) (2026-04-29)
+
+
+### Bug Fixes
+
+* **ci:** use PAT for release-please tags ([#3](https://github.com/mulhamna/broask/issues/3)) ([8247450](https://github.com/mulhamna/broask/commit/824745031625c06300dc04c63d47a644e7f7ca5d))
+
 ## 1.0.0 (2026-04-29)
 
 
