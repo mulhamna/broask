@@ -41,11 +41,10 @@ cat > bucket/broask.json <<EOF
 }
 EOF
 
-if git diff --quiet -- bucket/broask.json; then
+git add bucket/broask.json
+if git diff --cached --quiet -- bucket/broask.json; then
   echo "No scoop manifest changes to commit"
   exit 0
 fi
-
-git add bucket/broask.json
 git -c user.name='Mulham' -c user.email='mulhamna@gmail.com' commit -m "chore: update broask scoop manifest to ${VERSION}"
 git push origin HEAD:main
