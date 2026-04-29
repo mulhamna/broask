@@ -1,0 +1,11 @@
+# Default owner for the whole repository
+* @mulhamna
+
+# Release and CI workflows
+/.github/workflows/ @mulhamna
+/.github/scripts/ @mulhamna
+
+# Packaging and release metadata
+/.goreleaser.yaml @mulhamna
+/release-please-config.json @mulhamna
+/.release-please-manifest.json @mulhamna
