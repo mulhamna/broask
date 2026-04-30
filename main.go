@@ -76,7 +76,6 @@ func run() error {
 	}
 }
 
-
 func handleConfig(args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("usage: broask config <show|set|add-pattern|reset>")
