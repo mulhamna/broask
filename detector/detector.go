@@ -1,7 +1,6 @@
 package detector
 
 import (
-	"bufio"
 	"io"
 	"regexp"
 	"strings"
@@ -19,6 +18,9 @@ var defaultPatterns = map[string]string{
 	"yn_bracket":      `\[y/n\]`,
 	"confirm":         `(?i)confirm\?`,
 }
+
+// matches ANSI/VT escape sequences
+var ansiRe = regexp.MustCompile(`\x1b(?:\[[0-9;?]*[a-zA-Z]|[^[]|][^\x07]*\x07)`)
 
 type Detector struct {
 	patterns []*regexp.Regexp
@@ -66,7 +68,7 @@ func New(cfg Config) (*Detector, error) {
 }
 
 func (d *Detector) Matches(line string) bool {
-	line = strings.TrimSpace(line)
+	line = strings.TrimSpace(ansiRe.ReplaceAllString(line, ""))
 	for _, re := range d.patterns {
 		if re.MatchString(line) {
 			return true
@@ -75,22 +77,62 @@ func (d *Detector) Matches(line string) bool {
 	return false
 }
 
-func (d *Detector) Watch(r io.Reader, onMatch func()) {
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if d.Matches(line) {
-			d.mu.Lock()
-			elapsed := time.Since(d.lastPlay)
-			canPlay := elapsed >= d.cooldown
-			if canPlay {
-				d.lastPlay = time.Now()
-			}
-			d.mu.Unlock()
+func (d *Detector) tryPlay(onMatch func()) {
+	d.mu.Lock()
+	canPlay := time.Since(d.lastPlay) >= d.cooldown
+	if canPlay {
+		d.lastPlay = time.Now()
+	}
+	d.mu.Unlock()
+	if canPlay {
+		go onMatch()
+	}
+}
 
-			if canPlay {
-				go onMatch()
+// Watch reads raw bytes from r, strips ANSI codes, and calls onMatch when a
+// pattern is detected. Unlike a line scanner it does not wait for '\n', so
+// prompts that never terminate with a newline are still caught.
+func (d *Detector) Watch(r io.Reader, onMatch func()) {
+	buf := make([]byte, 4096)
+	var acc strings.Builder
+
+	for {
+		n, err := r.Read(buf)
+		if n > 0 {
+			clean := ansiRe.ReplaceAllString(string(buf[:n]), "")
+			acc.WriteString(clean)
+
+			text := acc.String()
+			if d.matchesText(text) {
+				d.tryPlay(onMatch)
+				acc.Reset()
+			} else {
+				// Keep only content after the last newline to bound memory.
+				if idx := strings.LastIndexByte(text, '\n'); idx >= 0 {
+					tail := text[idx+1:]
+					acc.Reset()
+					acc.WriteString(tail)
+				}
+				// Hard cap: avoid unbounded growth on no-newline streams.
+				if acc.Len() > 2048 {
+					s := acc.String()
+					acc.Reset()
+					acc.WriteString(s[len(s)-512:])
+				}
 			}
 		}
+		if err != nil {
+			break
+		}
 	}
+}
+
+func (d *Detector) matchesText(text string) bool {
+	text = strings.TrimSpace(text)
+	for _, re := range d.patterns {
+		if re.MatchString(text) {
+			return true
+		}
+	}
+	return false
 }
