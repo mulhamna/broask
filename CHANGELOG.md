@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mulhamna/broask/compare/v1.0.5...v1.1.0) (2026-04-30)
+
+
+### Features
+
+* PTY wrapping, shell init, ANSI stripping, Makefile ([#14](https://github.com/mulhamna/broask/issues/14)) ([785677d](https://github.com/mulhamna/broask/commit/785677d7e37b0faf6125fe34d1df4e4c673e89f1))
+
 ## [1.0.5](https://github.com/mulhamna/broask/compare/v1.0.4...v1.0.5) (2026-04-29)
 
 
