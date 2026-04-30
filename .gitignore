@@ -10,6 +10,7 @@
 
 # Output build
 *.out
+broask
 
 # Go workspace file
 go.work

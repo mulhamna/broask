@@ -3,17 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
-	"os/exec"
-	"os/signal"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"github.com/mulhamna/broask/audio"
 	"github.com/mulhamna/broask/config"
-	"github.com/mulhamna/broask/detector"
 )
 
 var version = "dev"
@@ -59,6 +54,13 @@ func run() error {
 	case "config":
 		return handleConfig(args[1:])
 
+	case "init":
+		shell := ""
+		if len(args) > 1 {
+			shell = args[1]
+		}
+		return handleInit(shell)
+
 	case "--":
 		if len(args) < 2 {
 			return fmt.Errorf("usage: broask -- <command> [args...]")
@@ -74,59 +76,6 @@ func run() error {
 	}
 }
 
-func wrap(args []string) error {
-	cfg, err := config.Load()
-	if err != nil {
-		return err
-	}
-
-	det, err := detector.New(detector.Config{
-		UseDefaults:      cfg.Patterns.UseDefaults,
-		Extra:            cfg.Patterns.Extra,
-		DisabledDefaults: cfg.Patterns.DisabledDefaults,
-		CooldownMs:       cfg.CooldownMs,
-	})
-	if err != nil {
-		return fmt.Errorf("detector: %w", err)
-	}
-
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
-
-	pr, pw := io.Pipe()
-	cmd.Stdout = io.MultiWriter(os.Stdout, pw)
-
-	aCfg := audio.Config{
-		Sound:           cfg.Sound,
-		CustomSoundPath: cfg.CustomSoundPath,
-		Volume:          cfg.Volume,
-	}
-
-	go det.Watch(pr, func() {
-		audio.Play(aCfg) //nolint
-	})
-
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		s := <-sig
-		if cmd.Process != nil {
-			cmd.Process.Signal(s)
-		}
-	}()
-
-	err = cmd.Run()
-	pw.Close()
-
-	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			os.Exit(exitErr.ExitCode())
-		}
-		return err
-	}
-	return nil
-}
 
 func handleConfig(args []string) error {
 	if len(args) == 0 {
@@ -189,6 +138,42 @@ func handleConfig(args []string) error {
 	return nil
 }
 
+// defaultWrappedCmds are the AI CLI tools broask wraps by default.
+var defaultWrappedCmds = []string{"claude", "aider", "gemini", "sgpt", "llm"}
+
+func handleInit(shell string) error {
+	if shell == "" {
+		shell = detectShell()
+	}
+	switch shell {
+	case "fish":
+		fmt.Println("# broask shell integration — add to ~/.config/fish/config.fish:")
+		fmt.Println("# eval (broask init fish)")
+		for _, cmd := range defaultWrappedCmds {
+			fmt.Printf("function %s\n  command broask -- %s $argv\nend\n", cmd, cmd)
+		}
+	default: // bash / zsh
+		fmt.Println("# broask shell integration — add to ~/.zshrc or ~/.bashrc:")
+		fmt.Println("# eval \"$(broask init)\"")
+		for _, cmd := range defaultWrappedCmds {
+			fmt.Printf("%s() { command broask -- %s \"$@\"; }\n", cmd, cmd)
+		}
+	}
+	return nil
+}
+
+func detectShell() string {
+	shell := os.Getenv("SHELL")
+	switch {
+	case strings.HasSuffix(shell, "fish"):
+		return "fish"
+	case strings.HasSuffix(shell, "zsh"):
+		return "zsh"
+	default:
+		return "bash"
+	}
+}
+
 func printUsage() {
 	fmt.Print(`broask — play a sound when CLI tools ask for confirmation
 
@@ -198,6 +183,7 @@ Usage:
   broask config set <key> <val>   update config
   broask config add-pattern <rx>  add custom pattern
   broask config reset             reset to defaults
+  broask init [shell]             print shell integration (bash/zsh/fish)
   broask sounds                   list bundled sounds
   broask test-sound               test current sound
   broask version                  show version
